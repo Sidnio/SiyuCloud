@@ -38,8 +38,6 @@ com.sidnio.siyucloud.media.video         // 视频播放逻辑
 com.sidnio.siyucloud.media.audio         // 音频播放逻辑
 com.sidnio.siyucloud.media.image         // 图片浏览逻辑
 
-com.sidnio.siyucloud.core.player         // 播放器接口封装
-com.sidnio.siyucloud.core.decoder        // 解码器支持
 com.sidnio.siyucloud.core.network        // 网络加载、NAS 支持
 com.sidnio.siyucloud.core.storage        // 本地缓存与文件系统
 

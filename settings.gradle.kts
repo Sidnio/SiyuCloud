@@ -21,3 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "SiyuCloud"
 include(":app")
+include(":ui")
+include(":ui:tv")
+include(":ui:phone")
+include(":ui:tablet")

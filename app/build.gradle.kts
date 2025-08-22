@@ -54,16 +54,19 @@ android {
         }
     }
 
-
-    // 配置风味
     flavorDimensions += "device"
+
 
     productFlavors {
         create("tv") {
+            dimension = "device"
+            applicationIdSuffix =".standalone"
             applicationId = "com.sidnio.siyucloud.tv"
+
             signingConfig = signingConfigs.getByName("tv")
         }
         create("tablet") {
+            dimension = "device"
             applicationId = "com.sidnio.siyucloud.tablet"
             signingConfig = signingConfigs.getByName("tablet")
         }
@@ -73,7 +76,6 @@ android {
             signingConfig = signingConfigs.getByName("phone")
         }
     }
-
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -94,4 +96,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    "tvImplementation"(project(":ui:tv"))
+    "phoneImplementation"(project(":ui:phone"))
+    "tabletImplementation"(project(":ui:tablet"))
 }

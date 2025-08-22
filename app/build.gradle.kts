@@ -3,7 +3,34 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+val appVersionCode = 1
+val appVersionName = "1.0"
+
+
+
 android {
+    signingConfigs {
+        create("tv") {
+            storeFile = file("android.keystore")
+            keyAlias = "siyucloud"
+            storePassword = "siyucloud123456"
+            keyPassword = "siyucloud123456"
+        }
+
+        create("tablet") {
+            storeFile = file("android.keystore")
+            keyAlias = "siyucloud"
+            storePassword = "siyucloud123456"
+            keyPassword = "siyucloud123456"
+        }
+        create("phone") {
+            storeFile = file("android.keystore")
+            keyAlias = "siyucloud"
+            storePassword = "siyucloud123456"
+            keyPassword = "siyucloud123456"
+        }
+    }
+
     namespace = "com.sidnio.siyucloud"
     compileSdk = 36
 
@@ -11,8 +38,8 @@ android {
         applicationId = "com.sidnio.siyucloud"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,6 +53,28 @@ android {
             )
         }
     }
+
+
+    // 配置风味
+    flavorDimensions += "device"
+
+    productFlavors {
+        create("tv") {
+            applicationId = "com.sidnio.siyucloud.tv"
+            signingConfig = signingConfigs.getByName("tv")
+        }
+        create("tablet") {
+            applicationId = "com.sidnio.siyucloud.tablet"
+            signingConfig = signingConfigs.getByName("tablet")
+        }
+        create("phone") {
+            dimension = "device"
+            applicationId = "com.sidnio.siyucloud.phone"
+            signingConfig = signingConfigs.getByName("phone")
+        }
+    }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

@@ -60,7 +60,7 @@ android {
     productFlavors {
         create("tv") {
             dimension = "device"
-            applicationIdSuffix =".standalone"
+            applicationIdSuffix = ".standalone"
             applicationId = "com.sidnio.siyucloud.tv"
 
             signingConfig = signingConfigs.getByName("tv")

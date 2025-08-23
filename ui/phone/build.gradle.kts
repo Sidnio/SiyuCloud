@@ -34,4 +34,5 @@ android {
 
 dependencies {
     api(project(":ui"))
+    api(project(":core"))
 }

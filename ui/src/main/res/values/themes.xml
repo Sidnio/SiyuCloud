@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.SiyuCloud" parent="Base.Theme.SiyuCloud" />
+
+    <style name="Theme.SiyuCloud.tv" parent="Theme.SiyuCloud" />
+
+    <style name="Theme.SiyuCloud.phone" parent="Theme.SiyuCloud" />
+
+    <style name="Theme.SiyuCloud.tablet" parent="Theme.SiyuCloud" />
+
+
 </resources>

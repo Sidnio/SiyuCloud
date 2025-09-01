@@ -7,14 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivityPhone">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Phone"
-        android:textSize="40sp"
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/phone_main_viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_main_top_navigation_tab_layout" />
+
+
+    <!--顶部导航按钮-->
+    <include layout="@layout/phone_activity_main_top_navigation" />
+
+<!--    &lt;!&ndash;底部导航视图&ndash;&gt;
+    <include layout="@layout/phone_activity_main_bottom_navigation" />-->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

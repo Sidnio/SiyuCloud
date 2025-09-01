@@ -22,6 +22,14 @@ class MainActivityPhone : AppCompatActivity() {
         }
 
 
+        val mainViewManager = MainViewManager()
+        mainViewManager.show(this)
+
+
+
+
+
+
         lifecycleScope.launch(Dispatchers.IO) {
             val netWork = CoreManger()
             netWork.network.webdav

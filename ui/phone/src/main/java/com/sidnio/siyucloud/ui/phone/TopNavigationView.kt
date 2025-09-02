@@ -10,10 +10,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-
-import com.google.android.material.tabs.TabLayout
 import androidx.core.content.withStyledAttributes
 import androidx.core.util.TypedValueCompat
+import com.google.android.material.tabs.TabLayout
 
 private const val TAG = "TopNavigationView"
 
@@ -51,7 +50,7 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
         // 第二步：从该样式中获取 PhoneTheme 中声明的属性
         context.withStyledAttributes(styleResId, R.styleable.PhoneTheme) {
 
-            tabMargin = TypedValueCompat.pxToDp(getDimensionPixelSize(R.styleable.PhoneTheme_tabMargin, 20).toFloat(), resources.displayMetrics).toInt()
+            tabMargin =  getDimensionPixelSize(R.styleable.PhoneTheme_tabMargin, 20)
             tabTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.PhoneTheme_tabTextSize, 18f), resources.displayMetrics)
             tabSelectedTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.PhoneTheme_tabSelectedTextSize, 25f), resources.displayMetrics)
             position = getInt(R.styleable.PhoneTheme_position, 0)
@@ -153,7 +152,7 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
 
 
         newTab.view.post {  // 设置间距
-            newTab.view.setPadding(tabMargin, tabMargin, tabMargin, tabMargin)
+            newTab.view.setPadding(tabMargin, 0, tabMargin, 0)
         }
 
 

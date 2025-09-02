@@ -8,7 +8,7 @@
     <attr name="phoneTab" format="reference" />
 
     <style name="Theme.SiyuCloud.phone.tab">
-        <item name="tabMargin">20dp</item>
+        <item name="tabMargin">10dp</item>
         <item name="tabTextSize">18sp</item>
         <item name="tabSelectedTextSize">25sp</item>
         <item name="position">0</item>

@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="Theme.SiyuCloud.phone" parent="Theme.SiyuCloud">
+        <item name="phoneTab">@style/Theme.SiyuCloud.phone.tab</item>
+    </style>
+
+    <attr name="phoneTab" format="reference" />
+
+    <style name="Theme.SiyuCloud.phone.tab">
+        <item name="tabMargin">20dp</item>
+        <item name="tabTextSize">18sp</item>
+        <item name="tabSelectedTextSize">25sp</item>
+        <item name="position">0</item>
+    </style>
+
+
+    <declare-styleable name="PhoneTheme">
+
+        <!-- tab页签之间的间距 -->
+        <attr name="tabMargin" format="dimension" />
+        <!-- tab页签文字大小 -->
+        <attr name="tabTextSize" format="dimension" />
+        <!-- tab页签选中时的文字大小 -->
+        <attr name="tabSelectedTextSize" format="dimension" />
+        <!-- tab页签的位置 -->
+        <attr name="position" format="integer" />
+
+
+    </declare-styleable>
+</resources>

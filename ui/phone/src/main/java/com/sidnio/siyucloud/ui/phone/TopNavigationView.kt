@@ -5,39 +5,62 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+
 import com.google.android.material.tabs.TabLayout
+import androidx.core.content.withStyledAttributes
+import androidx.core.util.TypedValueCompat
 
 private const val TAG = "TopNavigationView"
 
 class TopNavigationView(mainActivity: Activity, private val tabDataList: List<TabData>) {
-    private val context: Context = mainActivity.baseContext
+    private val context: Context = mainActivity
     private val tabLayout = mainActivity.findViewById<TabLayout>(R.id.phone_main_top_navigation_tab_layout)
 
     /**
      * 间隔
      */
-    private val tabMargin = 20
+    private var tabMargin = 0
 
     /**
      * tab 默认字体大小
      */
-    private val tabTextSize = 18f
+    private var tabTextSize = 0f
 
     /**
      * tab 默认字体大小
      */
-    private val tabSelectedTextSize = 25f
+    private var tabSelectedTextSize = 0f
 
     /**
      * 初始当前位置
      */
-    private val position = 0
+    private var position = 0
 
     fun show() {
+
+        // 第一步：从主题中获取 phoneTab 样式的资源 ID
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(R.attr.phoneTab, typedValue, true)
+        val styleResId = typedValue.resourceId
+
+        // 第二步：从该样式中获取 PhoneTheme 中声明的属性
+        context.withStyledAttributes(styleResId, R.styleable.PhoneTheme) {
+
+            tabMargin = TypedValueCompat.pxToDp(getDimensionPixelSize(R.styleable.PhoneTheme_tabMargin, 20).toFloat(), resources.displayMetrics).toInt()
+            tabTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.PhoneTheme_tabTextSize, 18f), resources.displayMetrics)
+            tabSelectedTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.PhoneTheme_tabSelectedTextSize, 25f), resources.displayMetrics)
+            position = getInt(R.styleable.PhoneTheme_position, 0)
+
+        }
+
+
+        Log.d(TAG, "show: $tabMargin $tabTextSize $tabSelectedTextSize $position")
+
         initTabLayout()
     }
 
@@ -47,7 +70,6 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
 
         }
 
-        // tabLayout.tabIndicatorInterpolatorWidth = 70 // 设置选项卡指示器宽度
         tabLayout.tabIndicatorAnimationMode = TabLayout.INDICATOR_ANIMATION_MODE_FADE // 设置选项卡动画模式
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tabLayout.tabRippleColor = null // 移除选项卡的波纹效果

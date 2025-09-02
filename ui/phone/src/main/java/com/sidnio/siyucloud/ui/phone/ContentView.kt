@@ -15,7 +15,7 @@ class ContentView(
 
 
     private val viewPager2: ViewPager2 = activity.findViewById(R.id.phone_main_viewPager2)
-
+    private var isScroll=true
     fun show() {
         initContentView()
     }
@@ -35,55 +35,52 @@ class ContentView(
         viewPager2.adapter = contentAdapter
 
         var isAnimationMode = false
-        viewPager2.setCurrentItem(tabLayout.tabCount, true)
+        viewPager2.setCurrentItem(0, false)
 
-//        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-//            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//                if (positionOffset != 0f) {
-//                    isScroll = true
-//                }
-//                if (!isAnimationMode) {
-//                    isAnimationMode = true
-//                    topNavigationView.setTabIndicatorLinear()
-//                }
-//                tabLayout.setScrollPosition(position, positionOffset, true)
-//            }
-//
-//            override fun onPageSelected(position: Int) {
-//                val statusBars = mainList[position].isLightStatusBars
-//
-//                if (statusBars) {
-//                    topNavigationView.updateTabIndicatorBlackColor()
-//                    bottomNavigationView.updateTabIndicatorBlackColor()
-//                } else {
-//                    topNavigationView.updateTabIndicatorWhiteColor()
-//                    bottomNavigationView.updateTabIndicatorWhiteColor()
-//                }
-//
-//                tabLayout.selectTab(tabLayout.getTabAt(position))
-//
-//            }
-//
-//            override fun onPageScrollStateChanged(state: Int) {
-//                isScroll = false
-//                isAnimationMode = false
-//                topNavigationView.setTabIndicatorFade()
-//            }
-//        })
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 
-//        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab) {
-//                viewPager2.setCurrentItem(tab.position, true)
-//            }
-//
-//            override fun onTabUnselected(p0: TabLayout.Tab?) {
-//
-//            }
-//
-//            override fun onTabReselected(p0: TabLayout.Tab?) {
-//
-//            }
-//        })
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                if (positionOffset != 0f) {
+                    isScroll = true
+                }
+                if (!isAnimationMode) {
+                    isAnimationMode = true
+                   topNavigationView.setTabIndicatorLinear()
+                }
+                tabLayout.setScrollPosition(position, positionOffset, true)
+            }
+
+            override fun onPageSelected(position: Int) {
+
+
+                topNavigationView.updateTabIndicatorBlackColor()
+
+
+                tabLayout.selectTab(tabLayout.getTabAt(position))
+
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                isScroll = false
+                isAnimationMode = false
+                 topNavigationView.setTabIndicatorFade()
+            }
+        })
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                 viewPager2.setCurrentItem(tab.position, true)
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+
+            }
+        })
 
 
     }

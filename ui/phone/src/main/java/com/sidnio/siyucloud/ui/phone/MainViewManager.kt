@@ -22,10 +22,10 @@ class MainViewManager {
 
     private fun initTabData() {
         tabData = listOf(
-            TabData("tst1", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
-            TabData("tst2", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
+            TabData("test1", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
+            TabData("test2", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
 
-            TabData("tst3", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
+            TabData("test3", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
 
 
             )

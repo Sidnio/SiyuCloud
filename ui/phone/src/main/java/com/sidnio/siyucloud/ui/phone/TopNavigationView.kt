@@ -42,23 +42,19 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
 
     fun show() {
 
-        // 第一步：从主题中获取 phoneTab 样式的资源 ID
         val typedValue = TypedValue()
-        context.theme.resolveAttribute(R.attr.phoneTab, typedValue, true)
+        context.theme.resolveAttribute(R.attr.mainTab, typedValue, true)
         val styleResId = typedValue.resourceId
 
-        // 第二步：从该样式中获取 PhoneTheme 中声明的属性
-        context.withStyledAttributes(styleResId, R.styleable.PhoneTheme) {
+        context.withStyledAttributes(styleResId, R.styleable.SiyuCloudTheme) {
 
-            tabMargin =  getDimensionPixelSize(R.styleable.PhoneTheme_tabMargin, 20)
-            tabTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.PhoneTheme_tabTextSize, 18f), resources.displayMetrics)
-            tabSelectedTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.PhoneTheme_tabSelectedTextSize, 25f), resources.displayMetrics)
-            position = getInt(R.styleable.PhoneTheme_position, 0)
+            tabMargin =  getDimensionPixelSize(R.styleable.SiyuCloudTheme_tabMargin, 20)
+            tabTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.SiyuCloudTheme_tabTextSize, 18f), resources.displayMetrics)
+            tabSelectedTextSize = TypedValueCompat.pxToSp(getDimension(R.styleable.SiyuCloudTheme_tabSelectedTextSize, 25f), resources.displayMetrics)
+            position = getInt(R.styleable.SiyuCloudTheme_position, 0)
 
         }
 
-
-        Log.d(TAG, "show: $tabMargin $tabTextSize $tabSelectedTextSize $position")
 
         initTabLayout()
     }
@@ -66,7 +62,6 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
     private fun initTabLayout() {
         tabDataList.forEachIndexed { index, data ->
             addTabTextView(tabLayout, data, index)
-
         }
 
         tabLayout.tabIndicatorAnimationMode = TabLayout.INDICATOR_ANIMATION_MODE_FADE // 设置选项卡动画模式
@@ -76,7 +71,7 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
         tabLayout.isTabIndicatorFullWidth = false // 设置选项卡指示器是否为全宽
 
         tabLayout.post { //设置默认选中某个
-            tabLayout.setScrollPosition(position, 0f, true) // 设置选项卡位置为最后要给
+            tabLayout.setScrollPosition(0, 0f, true) // 设置选项卡位置为最后要给
         }
 
 
@@ -180,11 +175,11 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
     }
 
     fun setTabIndicatorLinear() {
-        tabLayout.tabIndicatorAnimationMode = TabLayout.INDICATOR_ANIMATION_MODE_LINEAR
+      //  tabLayout.tabIndicatorAnimationMode = TabLayout.INDICATOR_ANIMATION_MODE_LINEAR
     }
 
     fun setTabIndicatorFade() {
-        tabLayout.tabIndicatorAnimationMode = TabLayout.INDICATOR_ANIMATION_MODE_FADE
+     //   tabLayout.tabIndicatorAnimationMode = TabLayout.INDICATOR_ANIMATION_MODE_FADE
     }
 
 
@@ -228,8 +223,9 @@ class TopNavigationView(mainActivity: Activity, private val tabDataList: List<Ta
     }
 
 
-    fun getRootLayoutView(): View {
-        return tabLayout
+    fun getPosition(): Int {
+        return position
     }
+
 
 }

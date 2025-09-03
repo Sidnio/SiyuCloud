@@ -2,20 +2,21 @@
 
 
     <style name="Theme.SiyuCloud.phone" parent="Theme.SiyuCloud">
-        <item name="phoneTab">@style/Theme.SiyuCloud.phone.tab</item>
+        <item name="mainTab">@style/Theme.SiyuCloud.phone.tab</item>
     </style>
 
-    <attr name="phoneTab" format="reference" />
 
     <style name="Theme.SiyuCloud.phone.tab">
         <item name="tabMargin">10dp</item>
         <item name="tabTextSize">18sp</item>
         <item name="tabSelectedTextSize">25sp</item>
-        <item name="position">0</item>
+        <item name="position">1</item>
     </style>
+    <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
+    <attr name="mainTab" format="reference" />
 
-    <declare-styleable name="PhoneTheme">
+    <declare-styleable name="SiyuCloudTheme">
 
         <!-- tab页签之间的间距 -->
         <attr name="tabMargin" format="dimension" />

@@ -22,15 +22,48 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Webdav {
-private static final String TAG = "Webdav";
+    private static final String TAG = "Webdav";
 
-    public Webdav() {
+    private String url;
+    private String username;
+    private String password;
+
+
+
+  public   static class Builder {
+        private String url;
+        private String username;
+        private String password;
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public Webdav build() {
+            Webdav webdav = new Webdav();
+            webdav.url = url;
+            webdav.username = username;
+            webdav.password = password;
+            return webdav;
+        }
+    }
+
+
+    public void request() {
         try {
             OkHttpClient client = getUnsafeOkHttpClient();
-            String credential = Credentials.basic("root", "123456");
+            String credential = Credentials.basic(username, password);
 
             Request request = new Request.Builder()
-                    .url("https://192.168.31.40/webdav")
+                    .url(url)
                     .method("PROPFIND", RequestBody.create(new byte[0], null))
                     .header("Depth", "1")
                     .header("Authorization", credential)
@@ -51,14 +84,20 @@ private static final String TAG = "Webdav";
 
     }
 
-    @SuppressLint("CustomX509TrustManager")
+    @SuppressLint("CustomX509TrustManager,TrustAllX509TrustManager")
     private OkHttpClient getUnsafeOkHttpClient() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) {}
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) {}
-                        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[]{}; }
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                        }
+
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                        }
+
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[]{};
+                        }
                     }
             };
 
@@ -76,6 +115,7 @@ private static final String TAG = "Webdav";
     }
 
     private void parseWebDavResponse(String xml) {
+        Log.d(TAG, "parseWebDavResponse: " + xml);
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
@@ -120,7 +160,6 @@ private static final String TAG = "Webdav";
             return text;
         }
     }
-
 
 
 }

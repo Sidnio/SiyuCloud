@@ -10,7 +10,7 @@ import com.sidnio.siyucloud.core.CoreManger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivityPhone : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,7 +32,11 @@ class MainActivityPhone : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val netWork = CoreManger()
-            netWork.network.webdav
+            val webdavBuilder = netWork.network.webdav
+            webdavBuilder.setUrl("https://192.168.31.40/webdav")
+            webdavBuilder.setUsername("root")
+            webdavBuilder.setPassword("123456")
+            webdavBuilder.build().request()
         }
     }
 }

@@ -6,7 +6,7 @@
         android:theme="@style/Theme.SiyuCloud.phone"
         tools:replace="android:theme">
         <activity
-            android:name=".MainActivityPhone"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -42,5 +42,7 @@ dependencies {
     androidTestApi(libs.androidx.junit)
     androidTestApi(libs.androidx.espresso.core)
 
+    api("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
+
 
 }

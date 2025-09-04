@@ -1,16 +1,23 @@
 package com.sidnio.siyucloud.ui.phone
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import com.sidnio.siyucloud.core.CoreManger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,21 +29,15 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
         val mainViewManager = MainViewManager()
         mainViewManager.show(this)
 
-
-
-
-
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val netWork = CoreManger()
-            val webdavBuilder = netWork.network.webdav
-            webdavBuilder.setUrl("https://192.168.31.40/webdav")
-            webdavBuilder.setUsername("root")
-            webdavBuilder.setPassword("123456")
-            webdavBuilder.build().request()
+        viewModel.tabData.observe( this){
+            it.forEach { tabData ->
+                Log.d(TAG, "onCreate: ${tabData.tabTitle}")
+            }
         }
+
     }
 }

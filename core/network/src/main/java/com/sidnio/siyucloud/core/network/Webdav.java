@@ -6,10 +6,13 @@ import android.util.Log;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -27,13 +30,15 @@ public class Webdav {
     private String url;
     private String username;
     private String password;
+    private String rootDirectory;
 
 
-
-  public   static class Builder {
+    public static class Builder {
         private String url;
         private String username;
         private String password;
+        private String rootDirectory;
+
         public void setUrl(String url) {
             this.url = url;
         }
@@ -47,29 +52,44 @@ public class Webdav {
             this.password = password;
         }
 
+        public void setRootDirectory(String rootDirectory) {
+            this.rootDirectory = rootDirectory;
+        }
+
         public Webdav build() {
             Webdav webdav = new Webdav();
             webdav.url = url;
+            webdav.rootDirectory = rootDirectory;
             webdav.username = username;
             webdav.password = password;
+
+            webdav.request();
             return webdav;
         }
     }
 
 
-    public void request() {
-        try {
-            OkHttpClient client = getUnsafeOkHttpClient();
-            String credential = Credentials.basic(username, password);
+    private List<FileData> files;
 
-            Request request = new Request.Builder()
-                    .url(url)
-                    .method("PROPFIND", RequestBody.create(new byte[0], null))
-                    .header("Depth", "1")
-                    .header("Authorization", credential)
-                    .build();
+    public List<FileData> getFiles() {
+        return files;
+    }
 
-            Response response = client.newCall(request).execute();
+
+    private void request() {
+
+        OkHttpClient client = getUnsafeOkHttpClient();
+        String credential = Credentials.basic(username, password);
+
+        Request request = new Request.Builder()
+                .url(url + rootDirectory)
+                .method("PROPFIND", RequestBody.create(new byte[0], null))
+                .header("Depth", "1")
+                .header("Authorization", credential)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+
             Log.d(TAG, "code: " + response.code());
 
             if (response.body() != null) {
@@ -78,11 +98,13 @@ public class Webdav {
             } else {
                 Log.e(TAG, "响应体为空");
             }
-        } catch (Exception e) {
-            Log.e(TAG, "请求失败", e);
-        }
 
+        } catch (IOException e) {
+            Log.e(TAG, "请求失败", e);
+            throw new RuntimeException(e);
+        }
     }
+
 
     @SuppressLint("CustomX509TrustManager,TrustAllX509TrustManager")
     private OkHttpClient getUnsafeOkHttpClient() {
@@ -123,6 +145,7 @@ public class Webdav {
 
             int eventType = parser.getEventType();
             String currentTag = null;
+            ArrayList<FileData> fileDataArrayList = new ArrayList<>();
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
@@ -131,14 +154,34 @@ public class Webdav {
                         break;
                     case XmlPullParser.TEXT:
                         if (currentTag != null) {
-                            if (currentTag.endsWith("href")) {
-                                Log.d(TAG, "文件路径: " + decodeHref(parser.getText()));
-                            } else if (currentTag.endsWith("getcontentlength")) {
-                                Log.d(TAG, "文件大小: " + decodeHref(parser.getText()));
-                            } else if (currentTag.endsWith("getcontenttype")) {
-                                Log.d(TAG, "文件类型: " + decodeHref(parser.getText()));
+                            String name="";
+                            FileData fileData = new FileData();
+
+                            if (currentTag.endsWith(Parser.href.name())) {
+                                String textHref = decodeHref(parser.getText());
+                                fileData.setPath(textHref);
+                                name = textHref
+                                        .replace(rootDirectory, "")
+                                        .replace("/", "");
+                                fileData.setName(name);
+                                Log.d(TAG, "文件名称: " + name);
+                                Log.d(TAG, "文件路径: " + textHref);
+                            } else if (currentTag.endsWith(Parser.getcontentlength.name())) {
+                                String textContentLength = decodeHref(parser.getText());
+                                fileData.setSize(textContentLength);
+
+                                Log.d(TAG, "文件大小: " + textContentLength);
+                            } else if (currentTag.endsWith(Parser.getcontenttype.name())) {
+                                String textContentType = decodeHref(parser.getText());
+                                fileData.setType(textContentType);
+
+                                Log.d(TAG, "文件类型: " + textContentType);
                                 Log.d(TAG, "---------------------------------------------------------");
                             }
+                            if (!name.isEmpty()) {
+                                fileDataArrayList.add(fileData);
+                            }
+
                         }
                         break;
                     case XmlPullParser.END_TAG:
@@ -147,6 +190,7 @@ public class Webdav {
                 }
                 eventType = parser.next();
             }
+            files = fileDataArrayList;
         } catch (Exception e) {
             Log.e(TAG, "XML解析失败", e);
         }
@@ -161,5 +205,11 @@ public class Webdav {
         }
     }
 
+
+    private enum Parser {
+        href,
+        getcontentlength,
+        getcontenttype
+    }
 
 }

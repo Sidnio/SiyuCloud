@@ -35,5 +35,8 @@ android {
 dependencies {
     compileOnly(libs.androidx.appcompat)
     compileOnly(libs.androidx.lifecycle.runtime.ktx)
-    api(project(":utils"))
+    compileOnly(project(":utils"))
+    compileOnly(project(":utils:common"))
+
+
 }

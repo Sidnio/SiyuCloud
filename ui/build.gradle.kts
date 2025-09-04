@@ -39,6 +39,9 @@ dependencies {
     api(libs.androidx.activity)
     api(libs.androidx.constraintlayout)
     api(project(":utils:extensions"))
+    api(project(":utils:common"))
+    api(project(":utils"))
+
 
     testApi(libs.junit)
     androidTestApi(libs.androidx.junit)

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidnio.siyucloud.core.CoreManger
-import com.sidnio.siyucloud.utils.error.ErrorCallback
 import com.sidnio.siyucloud.utils.extensions.context
 import com.sidnio.siyucloud.utils.extensions.errorCallback
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +14,7 @@ class MainViewModel : ViewModel() {
     init {
 
 
-      //  launchTabViewData()
+        //  launchTabViewData()
     }
 
     fun setContext(context: Context) {
@@ -34,7 +33,7 @@ class MainViewModel : ViewModel() {
                 .setRootDirectory("/webdav")
                 .setUsername("root")
                 .setPassword("123456")
-                .setErrorCallback(errorCallback )
+                .setErrorCallback(errorCallback)
                 .build()
                 .files
                 .map { data -> TabData(tabTitle = data.name) }

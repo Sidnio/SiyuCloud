@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -136,6 +137,7 @@ public class Webdav {
         }
     }
 
+
     private void parseWebDavResponse(String xml) {
         Log.d(TAG, "parseWebDavResponse: " + xml);
         try {
@@ -145,56 +147,65 @@ public class Webdav {
 
             int eventType = parser.getEventType();
             String currentTag = null;
+            FileData currentFileData = null;
             ArrayList<FileData> fileDataArrayList = new ArrayList<>();
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
                         currentTag = parser.getName();
+                        if (Tag.Response.string.equalsIgnoreCase(currentTag)) {
+                            currentFileData = new FileData(); // 开始一个新的文件条目
+                        }
                         break;
-                    case XmlPullParser.TEXT:
-                        if (currentTag != null) {
-                            String name="";
-                            FileData fileData = new FileData();
 
+                    case XmlPullParser.TEXT:
+                        if (currentTag != null && currentFileData != null) {
+                            String text = parser.getText().trim();
                             if (currentTag.endsWith(Parser.href.name())) {
-                                String textHref = decodeHref(parser.getText());
-                                fileData.setPath(textHref);
-                                name = textHref
-                                        .replace(rootDirectory, "")
-                                        .replace("/", "");
-                                fileData.setName(name);
+                                String textHref = decodeHref(text);
+                                currentFileData.setPath(textHref);
+                                String name = textHref.replace(rootDirectory, "").replace("/", "");
+                                currentFileData.setName(name);
                                 Log.d(TAG, "文件名称: " + name);
                                 Log.d(TAG, "文件路径: " + textHref);
                             } else if (currentTag.endsWith(Parser.getcontentlength.name())) {
-                                String textContentLength = decodeHref(parser.getText());
-                                fileData.setSize(textContentLength);
-
-                                Log.d(TAG, "文件大小: " + textContentLength);
+                                currentFileData.setSize(decodeHref(text));
+                                Log.d(TAG, "文件大小: " + text);
                             } else if (currentTag.endsWith(Parser.getcontenttype.name())) {
-                                String textContentType = decodeHref(parser.getText());
-                                fileData.setType(textContentType);
-
-                                Log.d(TAG, "文件类型: " + textContentType);
-                                Log.d(TAG, "---------------------------------------------------------");
+                                currentFileData.setType(decodeHref(text));
+                                Log.d(TAG, "文件类型: " + text);
                             }
-                            if (!name.isEmpty()) {
-                                fileDataArrayList.add(fileData);
-                            }
-
                         }
                         break;
+
                     case XmlPullParser.END_TAG:
+                        if (Tag.Response.string.equalsIgnoreCase(parser.getName()) && currentFileData != null) { // 结束一个文件条目
+
+                            if (Objects.equals(currentFileData.getType(), Type.directory.string)){ // 判断是否是目录
+
+                                if (!currentFileData.getName().isEmpty()){ //目录名称不为null
+                                    fileDataArrayList.add(currentFileData); // 收集完整的文件条目
+                                    Log.d(TAG, "添加文件条目: " + currentFileData.getName()+" "+currentFileData.getType());
+                                    Log.d(TAG, "---------------------------------------------------------");
+                                }
+
+                            }
+
+                            currentFileData = null;
+                        }
                         currentTag = null;
                         break;
                 }
                 eventType = parser.next();
             }
+
             files = fileDataArrayList;
         } catch (Exception e) {
             Log.e(TAG, "XML解析失败", e);
         }
     }
+
 
     private String decodeHref(String text) {
         try {
@@ -205,6 +216,9 @@ public class Webdav {
         }
     }
 
+    /**
+     * 解析器
+     */
 
     private enum Parser {
         href,
@@ -212,4 +226,31 @@ public class Webdav {
         getcontenttype
     }
 
+    /**
+     * 文件类型
+     */
+    private enum Type {
+        directory("httpd/unix-directory"),
+
+        audioMpeg("audio/mpeg");
+
+
+        private final String string;
+
+        Type(String string) {
+            this.string = string;
+        }
+    }
+
+    private enum Tag {
+
+        Response("D:response");
+
+
+        private final String string;
+
+        Tag(String string) {
+            this.string = string;
+        }
+    }
 }

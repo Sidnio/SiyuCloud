@@ -34,6 +34,9 @@ class MainViewModel : ViewModel() {
                     isLightStatusBars = true
                 )
             }
+
+
+
             tabData.postValue(tabDataList)
 
 

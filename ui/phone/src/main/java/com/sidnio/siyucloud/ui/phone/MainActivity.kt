@@ -29,14 +29,15 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        val builder = MainViewManager.Builder()
 
-        val mainViewManager = MainViewManager()
-        mainViewManager.show(this)
 
         viewModel.tabData.observe( this){
             it.forEach { tabData ->
                 Log.d(TAG, "onCreate: ${tabData.tabTitle}")
             }
+            builder.addTabData(it)
+            builder.show( this)
         }
 
     }

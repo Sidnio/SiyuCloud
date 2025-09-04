@@ -5,29 +5,25 @@ import android.app.Activity
 class MainViewManager {
 
 
-    private lateinit var tabData: List<TabData>
+    class Builder {
+        private lateinit var tabData: List<TabData>
 
+        fun addTabData(tabData: List<TabData>): Builder {
+            this.tabData =tabData
+            return this
+        }
 
-    fun show(activity: Activity) {
+        fun show(activity: Activity)  {
+            val topNavigationView = TopNavigationView(activity, tabData)
+            topNavigationView.show()
 
-        initTabData()
-        val topNavigationView = TopNavigationView(activity, tabData)
-        topNavigationView.show()
-
-        val contentView = ContentView(activity, tabData, topNavigationView)
-        contentView.show()
-
+            val contentView = ContentView(activity, tabData, topNavigationView)
+            contentView.show()
+        }
     }
 
 
-    private fun initTabData() {
-        tabData = listOf(
-            TabData("test1", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
-            TabData("test2", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
-
-            TabData("test3", com.sidnio.siyucloud.ui.R.color.orange, com.sidnio.siyucloud.ui.R.color.green, true),
 
 
-            )
-    }
+
 }

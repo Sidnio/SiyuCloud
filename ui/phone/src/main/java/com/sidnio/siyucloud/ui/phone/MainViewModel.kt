@@ -4,42 +4,39 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sidnio.siyucloud.core.CoreManger
+import com.sidnio.siyucloud.utils.error.ErrorCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
     init {
-
         launchTabViewData()
     }
 
-      val tabData = MutableLiveData<List<TabData>>()
+    val tabDataList = MutableLiveData<List<TabData>>()
+
+    private val errorCallback = object : ErrorCallback() {
+        override fun onError(message: String, cause: Throwable) {
+
+        }
+    }
 
 
     private fun launchTabViewData() {
         viewModelScope.launch(Dispatchers.IO) {
-            val netWork = CoreManger()
-            val webdavBuilder = netWork.network.webdav
-            webdavBuilder.setUrl("https://192.168.31.40")
-            webdavBuilder.setRootDirectory("/webdav")
-            webdavBuilder.setUsername("root")
-            webdavBuilder.setPassword("123456")
-            val webdav = webdavBuilder.build()
 
-            val tabDataList = webdav.files.map { data ->
-                TabData(
-                    tabTitle = data.name,
-                    contentTextColor = android.R.color.white,
-                    contentBackupColor = android.R.color.black,
-                    isLightStatusBars = true
-                )
-            }
+            val data = CoreManger.network()
+                .webdav
+                .setUrl("https://192.168.31.40")
+                .setRootDirectory("/webdav")
+                .setUsername("root")
+                .setPassword("123456")
+                .setErrorCallback(errorCallback)
+                .build()
+                .files
+                .map { data -> TabData(tabTitle = data.name) }
 
-
-
-            tabData.postValue(tabDataList)
-
-
+            tabDataList.postValue(data)
         }
     }
 

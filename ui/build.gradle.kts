@@ -38,6 +38,7 @@ dependencies {
     api(libs.material)
     api(libs.androidx.activity)
     api(libs.androidx.constraintlayout)
+    api(project(":utils"))
     testApi(libs.junit)
     androidTestApi(libs.androidx.junit)
     androidTestApi(libs.androidx.espresso.core)

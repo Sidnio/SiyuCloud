@@ -1,6 +1,8 @@
 package com.sidnio.siyucloud.utils.error;
 
+import androidx.annotation.NonNull;
+
 public abstract class ErrorCallback {
 
-    public abstract void onError(String message,Throwable cause);
+    public abstract void onError(@NonNull String message, @NonNull Throwable cause);
 }

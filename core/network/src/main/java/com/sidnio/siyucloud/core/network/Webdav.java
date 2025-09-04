@@ -233,11 +233,7 @@ public class Webdav {
      * 文件类型
      */
     private enum Type {
-        directory("httpd/unix-directory"),
-
-        audioMpeg("audio/mpeg");
-
-
+        directory("httpd/unix-directory");
         private final String string;
 
         Type(String string) {

@@ -7,11 +7,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
-import com.sidnio.siyucloud.core.CoreManger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
 
@@ -32,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val builder = MainViewManager.Builder()
 
 
-        viewModel.tabData.observe( this){
+        viewModel.tabDataList.observe( this){
             it.forEach { tabData ->
                 Log.d(TAG, "onCreate: ${tabData.tabTitle}")
             }

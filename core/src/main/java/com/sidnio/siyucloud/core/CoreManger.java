@@ -10,4 +10,8 @@ public class CoreManger {
         network = new NetWorkManger();
 
     }
+
+    public static NetWorkManger network(){
+        return new NetWorkManger();
+    }
 }

@@ -4,5 +4,5 @@ import androidx.annotation.NonNull;
 
 public abstract class ErrorCallback {
 
-    public abstract void onError(@NonNull String message, @NonNull Throwable cause);
+    public abstract void onError(@NonNull String tag, @NonNull Throwable error);
 }

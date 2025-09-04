@@ -22,10 +22,10 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+      viewModel.setContext(this)
 
         val builder = MainViewManager.Builder()
-
+        Log.d(TAG, "onCreate: $this")
 
         viewModel.tabDataList.observe( this){
             it.forEach { tabData ->

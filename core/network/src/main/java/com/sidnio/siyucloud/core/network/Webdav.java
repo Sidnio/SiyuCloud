@@ -36,6 +36,7 @@ public class Webdav {
     public static class Builder {
         Webdav webdav = new Webdav();
         private ErrorCallback errorCallback;
+
         public Builder setUrl(String url) {
             webdav.url = url;
             return this;
@@ -64,9 +65,10 @@ public class Webdav {
         public Webdav build() {
             try {
                 webdav.request();
+                throw new RuntimeException("请求成功");
             } catch (Exception e) {
                 webdav.files = new ArrayList<>();
-                if (errorCallback != null){
+                if (errorCallback != null) {
                     errorCallback.onError(TAG, e);
                 }
             }

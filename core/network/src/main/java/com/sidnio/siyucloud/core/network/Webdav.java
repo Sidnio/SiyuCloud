@@ -3,12 +3,12 @@ package com.sidnio.siyucloud.core.network;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.sidnio.siyucloud.utils.error.ErrorCallback;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -33,38 +33,43 @@ public class Webdav {
     private String password;
     private String rootDirectory;
 
-
     public static class Builder {
-        private String url;
-        private String username;
-        private String password;
-        private String rootDirectory;
-
-        public void setUrl(String url) {
-            this.url = url;
+        Webdav webdav = new Webdav();
+        private ErrorCallback errorCallback;
+        public Builder setUrl(String url) {
+            webdav.url = url;
+            return this;
         }
 
-        public void setUsername(String username) {
-            this.username = username;
-
+        public Builder setUsername(String username) {
+            webdav.username = username;
+            return this;
         }
 
-        public void setPassword(String password) {
-            this.password = password;
+        public Builder setPassword(String password) {
+            webdav.password = password;
+            return this;
         }
 
-        public void setRootDirectory(String rootDirectory) {
-            this.rootDirectory = rootDirectory;
+        public Builder setRootDirectory(String rootDirectory) {
+            webdav.rootDirectory = rootDirectory;
+            return this;
+        }
+
+        public Builder setErrorCallback(ErrorCallback errorCallback) {
+            this.errorCallback = errorCallback;
+            return this;
         }
 
         public Webdav build() {
-            Webdav webdav = new Webdav();
-            webdav.url = url;
-            webdav.rootDirectory = rootDirectory;
-            webdav.username = username;
-            webdav.password = password;
-
-            webdav.request();
+            try {
+                webdav.request();
+            } catch (Exception e) {
+                webdav.files = new ArrayList<>();
+                if (errorCallback != null){
+                    errorCallback.onError(TAG, e);
+                }
+            }
             return webdav;
         }
     }
@@ -77,7 +82,7 @@ public class Webdav {
     }
 
 
-    private void request() {
+    private void request() throws Exception {
 
         OkHttpClient client = getUnsafeOkHttpClient();
         String credential = Credentials.basic(username, password);
@@ -91,24 +96,25 @@ public class Webdav {
 
         try (Response response = client.newCall(request).execute()) {
 
-            Log.d(TAG, "code: " + response.code());
+            if (response.code() != 207) {
+                throw new RuntimeException("code: 207 请求失败");
+            }
 
             if (response.body() != null) {
                 String responseBody = response.body().string();
                 parseWebDavResponse(responseBody);
             } else {
-                Log.e(TAG, "响应体为空");
+                throw new RuntimeException("响应体为空");
             }
 
-        } catch (IOException e) {
-            Log.e(TAG, "请求失败", e);
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("请求失败", e);
         }
     }
 
 
     @SuppressLint("CustomX509TrustManager,TrustAllX509TrustManager")
-    private OkHttpClient getUnsafeOkHttpClient() {
+    private OkHttpClient getUnsafeOkHttpClient() throws Exception {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
@@ -133,13 +139,12 @@ public class Webdav {
                     .build();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("SSL 认证失败", e);
         }
     }
 
 
-    private void parseWebDavResponse(String xml) {
-        Log.d(TAG, "parseWebDavResponse: " + xml);
+    private void parseWebDavResponse(String xml) throws Exception {
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
@@ -182,11 +187,11 @@ public class Webdav {
                     case XmlPullParser.END_TAG:
                         if (Tag.Response.string.equalsIgnoreCase(parser.getName()) && currentFileData != null) { // 结束一个文件条目
 
-                            if (Objects.equals(currentFileData.getType(), Type.directory.string)){ // 判断是否是目录
+                            if (Objects.equals(currentFileData.getType(), Type.directory.string)) { // 判断是否是目录
 
-                                if (!currentFileData.getName().isEmpty()){ //目录名称不为null
+                                if (!currentFileData.getName().isEmpty()) { //目录名称不为null
                                     fileDataArrayList.add(currentFileData); // 收集完整的文件条目
-                                    Log.d(TAG, "添加文件条目: " + currentFileData.getName()+" "+currentFileData.getType());
+                                    Log.d(TAG, "添加文件条目: " + currentFileData.getName() + " " + currentFileData.getType());
                                     Log.d(TAG, "---------------------------------------------------------");
                                 }
 
@@ -202,16 +207,14 @@ public class Webdav {
 
             files = fileDataArrayList;
         } catch (Exception e) {
-            Log.e(TAG, "XML解析失败", e);
+            throw new Exception("XML解析失败", e);
         }
     }
 
-
     private String decodeHref(String text) {
         try {
-            return java.net.URLDecoder.decode(text, StandardCharsets.UTF_8.name());
+            return android.net.Uri.decode(text);
         } catch (Exception e) {
-            Log.e(TAG, "decodeHref error: " + text, e);
             return text;
         }
     }
